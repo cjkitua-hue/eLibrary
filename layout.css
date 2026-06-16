@@ -1,1 +1,19 @@
+.hidden { display: none !important; }
+/* Grand Hall Grid */
+.wings-grid { padding: 20px; }
+.shelf { background: var(--shelf-bg); margin-bottom: 30px; padding: 15px; border-radius: 4px; }
+.books-grid { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; }
+.book-spine { background: var(--accent-color); color: #fff; padding: 20px; width: 120px; height: 180px; border-radius: 3px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; }
 
+/* Reading Room Layout */
+.reader-workspace { display: flex; height: 85vh; align-items: stretch; }
+#viewer { flex: 1; background: #fff; margin: 0 20px; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+[data-theme="midnight"] #viewer { background: #221a16; }
+
+.nav-btn { background: none; border: none; font-size: 2rem; color: var(--text-color); cursor: pointer; padding: 0 20px; }
+
+/* Margin Notes Sidebar */
+.margin-notes-panel { width: 300px; background: rgba(0,0,0,0.02); border-left: 1px solid rgba(0,0,0,0.1); padding: 15px; display: flex; flex-direction: column; }
+#notes-list { flex: 1; overflow-y: auto; margin-bottom: 15px; }
+.note-card { background: var(--bg-color); padding: 10px; margin-bottom: 10px; border-radius: 4px; font-size: 0.9rem; border-left: 3px solid var(--accent-color); }
+.note-input-area textarea { width: 100%; height: 80px; resize: none; margin-bottom: 8px; box-sizing: border-box; }
