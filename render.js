@@ -1,3 +1,4 @@
+// js/ui/render.js
 export function renderWings(wingsData, container) {
     container.innerHTML = ''; // Clear loading states
     
@@ -17,7 +18,9 @@ export function renderWings(wingsData, container) {
             shelf.books.forEach(book => {
                 const bookCard = document.createElement('div');
                 bookCard.className = 'book-spine';
-                // Simple representation of a book spine
+                // CRITICAL: This data attribute allows app.js to know which book was clicked
+                bookCard.setAttribute('data-id', book.id); 
+                
                 bookCard.innerHTML = `
                     <div class="spine-content">
                         <span class="title">${book.title}</span>
@@ -34,4 +37,5 @@ export function renderWings(wingsData, container) {
         
         container.appendChild(wingDiv);
     });
+}
 }
