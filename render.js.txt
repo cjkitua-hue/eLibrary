@@ -1,0 +1,37 @@
+export function renderWings(wingsData, container) {
+    container.innerHTML = ''; // Clear loading states
+    
+    wingsData.forEach(wing => {
+        const wingDiv = document.createElement('div');
+        wingDiv.className = 'wing-section';
+        wingDiv.innerHTML = `<h2>${wing.name}</h2>`;
+        
+        wing.shelves.forEach(shelf => {
+            const shelfDiv = document.createElement('div');
+            shelfDiv.className = 'shelf';
+            shelfDiv.innerHTML = `<h3>${shelf.name}</h3>`;
+            
+            const booksContainer = document.createElement('div');
+            booksContainer.className = 'books-grid';
+            
+            shelf.books.forEach(book => {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-spine';
+                // Simple representation of a book spine
+                bookCard.innerHTML = `
+                    <div class="spine-content">
+                        <span class="title">${book.title}</span>
+                        <span class="author">${book.author}</span>
+                        <div class="progress-bar" style="width: ${book.progress_percentage}%"></div>
+                    </div>
+                `;
+                booksContainer.appendChild(bookCard);
+            });
+            
+            shelfDiv.appendChild(booksContainer);
+            wingDiv.appendChild(shelfDiv);
+        });
+        
+        container.appendChild(wingDiv);
+    });
+}

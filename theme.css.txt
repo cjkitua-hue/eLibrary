@@ -1,0 +1,27 @@
+:root {
+    --bg-color: #f4f1ea; /* Warm off-white for physical library feel */
+    --text-color: #2c2c2c;
+    --accent-color: #8b5a2b; /* Wood spine color */
+    --shelf-bg: #e6e2d8;
+}
+
+/* The Midnight Archive Mode */
+[data-theme="midnight"] {
+    --bg-color: #1a1512; /* Deep mahogany/charcoal */
+    --text-color: #d4c4b7; /* Soft amber */
+    --accent-color: #b07c4f;
+    --shelf-bg: #2a221d;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Georgia', serif; /* Classic book typography */
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin: 0;
+    padding: 20px;
+}
+
+.hidden {
+    display: none !important;
+}
