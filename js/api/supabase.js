@@ -72,3 +72,26 @@ export async function insertNewBook(bookObj) {
     if (error) console.error("Error saving book:", error);
     return data;
 }
+// Generic function to upload a file to a specific Supabase bucket
+export async function uploadLibraryFile(bucketName, file) {
+    const fileExt = file.name.split('.').pop();
+    const uniqueFileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+    const { data, error } = await supabase.storage
+        .from(bucketName)
+        .upload(uniqueFileName, file, {
+            cacheControl: '3600',
+            upsert: false
+        });
+
+    if (error) {
+        console.error(`Error uploading to ${bucketName}:`, error);
+        throw error;
+    }
+
+    const { data: publicUrlData } = supabase.storage
+        .from(bucketName)
+        .getPublicUrl(uniqueFileName);
+
+    return publicUrlData.publicUrl;
+}
