@@ -1,40 +1,54 @@
-// js/ui/render.js
-export function renderWings(wingsData, container) {
-    container.innerHTML = ''; // Clear loading states
-    
-    wingsData.forEach(wing => {
-        const wingDiv = document.createElement('div');
-        wingDiv.className = 'wing-section';
-        wingDiv.innerHTML = `<h2>${wing.name}</h2>`;
-        
-        wing.shelves.forEach(shelf => {
-            const shelfDiv = document.createElement('div');
-            shelfDiv.className = 'shelf';
-            shelfDiv.innerHTML = `<h3>${shelf.name}</h3>`;
-            
-            const booksContainer = document.createElement('div');
-            booksContainer.className = 'books-grid';
-            
-            shelf.books.forEach(book => {
-                const bookCard = document.createElement('div');
-                bookCard.className = 'book-spine';
-                // CRITICAL: This data attribute allows app.js to know which book was clicked
-                bookCard.setAttribute('data-id', book.id); 
-                
-                bookCard.innerHTML = `
-                    <div class="spine-content">
-                        <span class="title">${book.title}</span>
-                        <span class="author">${book.author}</span>
-                        <div class="progress-bar" style="width: ${book.progress_percentage}%"></div>
-                    </div>
+export function renderWings(wings, container) {
+    container.innerHTML = ''; // Clear out the loading message
+
+    if (!wings || wings.length === 0) {
+        container.innerHTML = '<p class="empty-message">The vaults are currently empty. Open the intake panel to add a new book!</p>';
+        return;
+    }
+
+    wings.forEach(wing => {
+        const wingElement = document.createElement('section');
+        wingElement.className = 'wing-section';
+        wingElement.innerHTML = `
+            <h2 class="wing-title">${wing.name}</h2>
+            <p class="wing-desc">${wing.description || ''}</p>
+            <div class="shelves-container"></div>
+        `;
+
+        const shelvesContainer = wingElement.querySelector('.shelves-container');
+
+        if (wing.shelves && wing.shelves.length > 0) {
+            wing.shelves.forEach(shelf => {
+                const shelfElement = document.createElement('div');
+                shelfElement.className = 'shelf-row';
+                shelfElement.innerHTML = `
+                    <h3 class="shelf-title">${shelf.name}</h3>
+                    <div class="books-line"></div>
                 `;
-                booksContainer.appendChild(bookCard);
+
+                const booksLine = shelfElement.querySelector('.books-line');
+
+                if (shelf.books && shelf.books.length > 0) {
+                    shelf.books.forEach(book => {
+                        const bookElement = document.createElement('div');
+                        bookElement.className = 'book-spine';
+                        bookElement.dataset.id = book.id;
+                        bookElement.innerHTML = `
+                            <span class="book-title-text">${book.title}</span>
+                            <span class="book-progress">${book.progress_percentage || 0}%</span>
+                        `;
+                        booksLine.appendChild(bookElement);
+                    });
+                } else {
+                    booksLine.innerHTML = '<span class="empty-shelf">Empty Shelf</span>';
+                }
+
+                shelvesContainer.appendChild(shelfElement);
             });
-            
-            shelfDiv.appendChild(booksContainer);
-            wingDiv.appendChild(shelfDiv);
-        });
-        
-        container.appendChild(wingDiv);
+        } else {
+            shelvesContainer.innerHTML = '<p class="empty-wing">No shelves in this wing yet.</p>';
+        }
+
+        container.appendChild(wingElement);
     });
 }
