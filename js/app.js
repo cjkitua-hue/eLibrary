@@ -10,28 +10,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     const addBookForm = document.getElementById('add-book-form');
     const shelfSelect = document.getElementById('shelf-select');
 
+    // ==========================================
+    // STEP 1: WIRE UP UI CONTROLS IMMEDIATELY
+    // (This guarantees buttons work even if the DB is empty)
+    // ==========================================
     setupReaderControls();
 
-    // Load Main Library View
-    wingsContainer.innerHTML = '<p>Opening the vault...</p>';
-    const libraryData = await fetchLibraryHierarchy();
-    renderWings(libraryData, wingsContainer);
-
-    // Populate the dropdown menu options for new entries
-    const shelves = await fetchAllShelves();
-    shelves.forEach(shelf => {
-        const option = document.createElement('option');
-        option.value = shelf.id;
-        option.textContent = shelf.name;
-        shelfSelect.appendChild(option);
-    });
-
-    // Toggle Intake UI View
+    // Toggle the Intake panel view drawer
     toggleIntakeBtn.addEventListener('click', () => {
         intakePanel.classList.toggle('hidden-panel');
     });
 
-    // Handle book form cataloging event
+    // Handle theme switcher toggling
+    themeToggle.addEventListener('click', () => {
+        const active = document.body.getAttribute('data-theme') === 'midnight';
+        active ? document.body.removeAttribute('data-theme') : document.body.setAttribute('data-theme', 'midnight');
+    });
+
+    // Handle book cataloging form submission
     addBookForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -47,11 +43,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const result = await insertNewBook(newBook);
         if (result) {
             alert('Volume permanently archived in library vaults!');
-            window.location.reload(); // Instantly refresh layout view
+            window.location.reload();
         }
     });
 
-    // Global click delegate for launching books
+    // Global click listener for book clicks
     wingsContainer.addEventListener('click', async (e) => {
         const card = e.target.closest('.book-spine');
         if (card) {
@@ -62,8 +58,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    themeToggle.addEventListener('click', () => {
-        const active = document.body.getAttribute('data-theme') === 'midnight';
-        active ? document.body.removeAttribute('data-theme') : document.body.setAttribute('data-theme', 'midnight');
-    });
+    // ==========================================
+    // STEP 2: LOAD ASYNCHRONOUS DATABASE DATA
+    // ==========================================
+    try {
+        wingsContainer.innerHTML = '<p>Opening the vault...</p>';
+        
+        // Fetch library layout layout structure
+        const libraryData = await fetchLibraryHierarchy();
+        renderWings(libraryData, wingsContainer);
+
+        // Populate form dropdown select selection menu
+        const shelves = await fetchAllShelves();
+        shelves.forEach(shelf => {
+            const option = document.createElement('option');
+            option.value = shelf.id;
+            option.textContent = shelf.name;
+            shelfSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Vault access initialization failed:", error);
+        wingsContainer.innerHTML = '<p style="color: red; padding: 20px;">Could not connect to the vault. Please configure your keys in js/api/supabase.js.</p>';
+    }
 });
