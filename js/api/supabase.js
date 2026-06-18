@@ -1,6 +1,6 @@
 // Initialize Supabase
-const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+const SUPABASE_URL = 'https://krpmolggusicvebbnuiw.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtycG1vbGdndXNpY3ZlYmJudWl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1ODcyNzMsImV4cCI6MjA5NzE2MzI3M30.sx9fFtpogsY06N1kgwfWuxvaOgYeDKkpyohJjKvNFU4';
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export async function fetchLibraryHierarchy() {
