@@ -31,24 +31,24 @@ export function renderWings(wings, container) {
                 if (shelf.books && shelf.books.length > 0) {
                     shelf.books.forEach(book => {
                         const bookElement = document.createElement('div');
-                        bookElement.className = 'book-spine';
+// Inside render.js where you map through shelf.books
+                        bookElement.className = 'book-card'; // Changed from book-spine
                         bookElement.dataset.id = book.id;
-                        bookElement.innerHTML = `
-                            <span class="book-title-text">${book.title}</span>
-                            <span class="book-progress">${book.progress_percentage || 0}%</span>
-                        `;
-                        booksLine.appendChild(bookElement);
-                    });
-                } else {
-                    booksLine.innerHTML = '<span class="empty-shelf">Empty Shelf</span>';
-                }
 
-                shelvesContainer.appendChild(shelfElement);
-            });
-        } else {
-            shelvesContainer.innerHTML = '<p class="empty-wing">No shelves in this wing yet.</p>';
-        }
-
-        container.appendChild(wingElement);
-    });
-}
+// Check if we have a cover, otherwise use a fallback gradient
+                    const coverStyle = book.cover_image_url 
+                        ? `background-image: url('${book.cover_image_url}'); background-size: cover;`
+                        : `background: linear-gradient(45deg, var(--accent-color), var(--shelf-bg));`;
+            
+                    bookElement.innerHTML = `
+    <div class="book-cover" style="${coverStyle}">
+        ${!book.cover_image_url ? `<span class="fallback-title">${book.title}</span>` : ''}
+    </div>
+    <div class="book-meta">
+        <h4 class="book-title-text">${book.title}</h4>
+        <span class="book-author">${book.author}</span>
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: ${book.progress_percentage || 0}%"></div>
+        </div>
+    </div>
+`;
