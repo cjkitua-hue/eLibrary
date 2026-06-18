@@ -14,59 +14,55 @@ export async function openReadingRoom(bookData, existingNotes) {
     notesContainer.innerHTML = '';
     existingNotes.forEach(renderSingleNote);
 
-    // Instantiate Epub.js Book Object
-    currentBookInstance = ePub(bookData.file_url);
-    const rendition = currentBookInstance.renderTo("viewer", {
-        width: "100%",
-        height: "100%",
-        spread: "none"
-    });
+    const viewerContainer = document.getElementById('viewer');
+    viewerContainer.innerHTML = ''; // Clear previous renders
+    
+    const prevBtn = document.getElementById('prev-page');
+    const nextBtn = document.getElementById('next-page');
 
-    // Jump straight to their last synchronized location
-    const startingPoint = bookData.current_location_cfi || undefined;
-    await rendition.display(startingPoint);
-
-    // Page Turning Mechanics
-    document.getElementById('prev-page').onclick = () => rendition.prev();
-    document.getElementById('next-page').onclick = () => rendition.next();
-
-    // Listen to location changes to update bookmark variables natively
-    rendition.on('relocated', async (location) => {
-        const currentCfi = location.start.cfi;
-        // Generate current structural percentage progression
-        const progressFraction = currentBookInstance.locations.percentageFromCfi(currentCfi);
-        const progressPercentage = Math.floor(progressFraction * 100) || 0;
+    if (bookData.file_type === 'pdf') {
+        // --- PDF RENDERING ---
+        prevBtn.classList.add('hidden');
+        nextBtn.classList.add('hidden');
         
-        await updateBookLocation(rendezvousBookId, currentCfi, progressPercentage);
-    });
+        const pdfFrame = document.createElement('iframe');
+        pdfFrame.src = `${bookData.file_url}#toolbar=0`; 
+        pdfFrame.style.width = '100%';
+        pdfFrame.style.height = '100%';
+        pdfFrame.style.border = 'none';
+        
+        viewerContainer.appendChild(pdfFrame);
 
-    // Generate location index in the background to handle precise linear progress tracking
-    currentBookInstance.ready.then(() => {
-        return currentBookInstance.locations.generate(1024); 
-    });
-}
+    } else {
+        // --- EPUB RENDERING ---
+        prevBtn.classList.remove('hidden');
+        nextBtn.classList.remove('hidden');
+        
+        currentBookInstance = ePub(bookData.file_url);
+        const rendition = currentBookInstance.renderTo("viewer", {
+            width: "100%",
+            height: "100%",
+            spread: "none"
+        });
 
-export function setupReaderControls() {
-    // Back to library handler
-    document.getElementById('close-reader').addEventListener('click', () => {
-        if (currentBookInstance) currentBookInstance.destroy();
-        document.getElementById('reading-room').classList.add('hidden');
-        document.getElementById('library-view').classList.remove('hidden');
-        window.location.reload(); // Refresh hierarchy positions instantly
-    });
+        const startingPoint = bookData.current_location_cfi || undefined;
+        await rendition.display(startingPoint);
 
-    // Saving individual notes event listener
-    document.getElementById('save-note-btn').onclick = async () => {
-        const inputField = document.getElementById('note-text');
-        const content = inputField.value.trim();
-        if (!content) return;
+        prevBtn.onclick = () => rendition.prev();
+        nextBtn.onclick = () => rendition.next();
 
-        const newNote = await createMarginNote(rendezvousBookId, content);
-        if (newNote) {
-            renderSingleNote(newNote);
-            inputField.value = '';
-        }
-    };
+        rendition.on('relocated', async (location) => {
+            const currentCfi = location.start.cfi;
+            const progressFraction = currentBookInstance.locations.percentageFromCfi(currentCfi);
+            const progressPercentage = Math.floor(progressFraction * 100) || 0;
+            
+            await updateBookLocation(rendezvousBookId, currentCfi, progressPercentage);
+        });
+
+        currentBookInstance.ready.then(() => {
+            return currentBookInstance.locations.generate(1024); 
+        });
+    }
 }
 
 function renderSingleNote(note) {
