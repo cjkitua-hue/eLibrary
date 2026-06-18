@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // ==========================================
     // STEP 1: WIRE UP UI CONTROLS IMMEDIATELY
-    // (This guarantees buttons work even if the DB is empty)
     // ==========================================
     setupReaderControls();
 
@@ -27,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         active ? document.body.removeAttribute('data-theme') : document.body.setAttribute('data-theme', 'midnight');
     });
 
-   // Handle book cataloging form submission
+    // Handle book cataloging form submission
     addBookForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -73,13 +72,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error(error);
             submitBtn.textContent = 'Catalog Book';
             submitBtn.disabled = false;
-        }
-    });
-
-        const result = await insertNewBook(newBook);
-        if (result) {
-            alert('Volume permanently archived in library vaults!');
-            window.location.reload();
         }
     });
 
