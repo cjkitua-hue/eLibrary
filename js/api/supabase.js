@@ -56,3 +56,19 @@ export async function createMarginNote(bookId, content, chapterRef = "General") 
     if (error) console.error("Error creating note:", error);
     return data;
 }
+// Fetch raw list of shelves for dropdown picker selection
+export async function fetchAllShelves() {
+    const { data, error } = await supabase.from('shelves').select('id, name');
+    if (error) console.error("Error fetching shelves:", error);
+    return data || [];
+}
+
+// Persist a brand new user book entry permanently
+export async function insertNewBook(bookObj) {
+    const { data, error } = await supabase
+        .from('books')
+        .insert([bookObj])
+        .select();
+    if (error) console.error("Error saving book:", error);
+    return data;
+}
