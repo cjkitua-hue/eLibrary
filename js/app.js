@@ -1,4 +1,4 @@
-import { fetchLibraryHierarchy, fetchBookDetails, fetchAllShelves, insertNewBook } from './api/supabase.js';
+import { fetchLibraryHierarchy, fetchBookDetails, fetchAllShelves, insertNewBook, uploadLibraryFile } from './api/supabase.js';
 import { renderWings } from './ui/render.js';
 import { openReadingRoom, setupReaderControls } from './ui/reader.js';
 
@@ -27,18 +27,54 @@ document.addEventListener('DOMContentLoaded', async () => {
         active ? document.body.removeAttribute('data-theme') : document.body.setAttribute('data-theme', 'midnight');
     });
 
-    // Handle book cataloging form submission
+   // Handle book cataloging form submission
     addBookForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const newBook = {
-            title: document.getElementById('new-title').value.trim(),
-            author: document.getElementById('new-author').value.trim(),
-            file_url: document.getElementById('new-file-url').value.trim(),
-            cover_image_url: document.getElementById('new-cover-url').value.trim() || null,
-            shelf_id: shelfSelect.value,
-            progress_percentage: 0
-        };
+        const submitBtn = document.getElementById('catalog-submit-btn');
+        submitBtn.textContent = 'Uploading to Archives...';
+        submitBtn.disabled = true;
+
+        try {
+            const bookFile = document.getElementById('new-book-file').files[0];
+            const coverFile = document.getElementById('new-cover-file').files[0];
+            
+            const fileExtension = bookFile.name.split('.').pop().toLowerCase();
+            const fileType = fileExtension === 'pdf' ? 'pdf' : 'epub';
+
+            let finalBookUrl = '';
+            let finalCoverUrl = null;
+
+            if (bookFile) {
+                finalBookUrl = await uploadLibraryFile('books', bookFile);
+            }
+
+            if (coverFile) {
+                finalCoverUrl = await uploadLibraryFile('covers', coverFile);
+            }
+
+            const newBook = {
+                title: document.getElementById('new-title').value.trim(),
+                author: document.getElementById('new-author').value.trim(),
+                file_url: finalBookUrl,
+                cover_image_url: finalCoverUrl,
+                shelf_id: shelfSelect.value,
+                file_type: fileType,
+                progress_percentage: 0
+            };
+
+            const result = await insertNewBook(newBook);
+            if (result) {
+                alert('Volume permanently archived in library vaults!');
+                window.location.reload();
+            }
+        } catch (error) {
+            alert('Failed to catalog the book. Check the console for details.');
+            console.error(error);
+            submitBtn.textContent = 'Catalog Book';
+            submitBtn.disabled = false;
+        }
+    });
 
         const result = await insertNewBook(newBook);
         if (result) {
