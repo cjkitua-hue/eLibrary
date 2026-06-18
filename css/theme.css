@@ -1,16 +1,22 @@
 :root {
-    --bg-color: #f4f1ea; /* Warm off-white for physical library feel */
-    --text-color: #2c2c2c;
-    --accent-color: #8b5a2b; /* Wood spine color */
-    --shelf-bg: #e6e2d8;
+    /* Warm Light Mode */
+    --bg-color: #F9F7F1;         /* Soft parchment */
+    --text-color: #2D3748;       /* Deep slate for readability */
+    --accent-color: #D97757;     /* Warm terracotta */
+    --shelf-bg: #EADDCB;         /* Warm oak wood tone */
+    --card-bg: #FFFFFF;
+    --success-color: #4CAF50;    /* For reading progress */
 }
 
-/* The Midnight Archive Mode */
+/* Let's rename the data-theme conceptually to 'abyss' or keep 'midnight' */
 [data-theme="midnight"] {
-    --bg-color: #1a1512; /* Deep mahogany/charcoal */
-    --text-color: #d4c4b7; /* Soft amber */
-    --accent-color: #b07c4f;
-    --shelf-bg: #2a221d;
+    /* Deep Blue Dark Mode */
+    --bg-color: #0B1120;         /* Very dark navy/abyss */
+    --text-color: #E2E8F0;       /* Soft icy white */
+    --accent-color: #38BDF8;     /* Bright neon-ish blue for pop */
+    --shelf-bg: #1E293B;         /* Dark slate blue for shelves */
+    --card-bg: #151F32;
+    --success-color: #10B981; 
 }
 
 body {
