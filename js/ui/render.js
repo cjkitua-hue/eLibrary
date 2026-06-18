@@ -38,4 +38,3 @@ export function renderWings(wingsData, container) {
         container.appendChild(wingDiv);
     });
 }
-}
