@@ -23,16 +23,22 @@
 
         <section id="intake-panel" class="hidden-panel">
             <h3>Acquire New Volume</h3>
-            <form id="add-book-form">
+                <form id="add-book-form">
                 <input type="text" id="new-title" placeholder="Book Title" required>
                 <input type="text" id="new-author" placeholder="Author Name" required>
-                <input type="url" id="new-file-url" placeholder="EPUB File URL (e.g. from Storage or Public Link)" required>
-                <input type="url" id="new-cover-url" placeholder="Cover Image URL (Optional)">
-                <select id="shelf-select" required>
-                    <option value="">Select a Shelf...</option>
-                    </select>
-                <button type="submit">Catalog Book</button>
-            </form>
+    
+                <label for="new-book-file">Upload Book File (EPUB or PDF)</label>
+                <input type="file" id="new-book-file" accept=".epub, application/pdf" required>
+    
+                <label for="new-cover-file">Upload Cover Image (Optional)</label>
+            <input type="file" id="new-cover-file" accept="image/png, image/jpeg, image/webp">
+    
+    <select id="shelf-select" required>
+        <option value="">Select a Shelf...</option>
+    </select>
+    
+    <button type="submit" id="catalog-submit-btn">Catalog Book</button>
+</form>
         </section>
 
         <main id="wings-container" class="wings-grid"></main>
