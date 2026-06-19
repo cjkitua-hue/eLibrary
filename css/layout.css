@@ -1,32 +1,119 @@
+/* =========================
+   CORE UTILITIES
+========================= */
 .hidden { display: none !important; }
-/* Grand Hall Grid */
-.wings-grid { padding: 20px; }
-.shelf { background: var(--shelf-bg); margin-bottom: 30px; padding: 15px; border-radius: 4px; }
-.books-line {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto;
-    padding: 20px 10px;
-}
+.hidden-panel { display: none !important; }
 
-.book-card {
-    width: 140px;
+:root {
+    --radius-sm: 4px;
+    --radius-md: 6px;
+
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+
+    --shadow-soft: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-hover: 0 8px 18px rgba(0,0,0,0.12);
+}
+/* =========================
+   GRAND ARCHIVE HALL
+========================= */
+#archive-hall {
+    padding: var(--space-lg);
+}
+.hall-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: var(--space-lg);
+}
+.title-block h1 {
+    margin: 0;
+    font-size: 2rem;
+}
+.subtitle {
+    margin: 4px 0 0;
+    opacity: 0.7;
+    font-size: 0.95rem;
+}
+/* =========================
+   ARCHIVE STRUCTURE LAYOUT
+========================= */
+#archive-structure {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: var(--space-lg);
+}
+/* =========================
+   WINGS PANEL (LEFT NAV)
+======================== */
+#wings-panel {
+    background: var(--shelf-bg);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+}
+#wings-panel h2 {
+    margin-top: 0;
+}
+#wing-list {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-md) 0;
+}
+#wing-list li {
+    padding: 8px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
-    transition: transform 0.2s ease;
+}
+#wing-list li:hover {
+    background: rgba(0,0,0,0.05);
+}
+/* =========================
+   SHELF DISPLAY (MAIN AREA)
+========================= */
+#shelf-display {
     display: flex;
     flex-direction: column;
-    gap: 8px;
 }
-
+.shelf-header {
+    margin-bottom: var(--space-md);
+}
+.shelves-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+/* each shelf = a curated row of volumes */
+.shelf {
+    background: var(--shelf-bg);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+}
+.books-line {
+    display: flex;
+    gap: var(--space-lg);
+    overflow-x: auto;
+    padding: var(--space-md) 0;
+}
+/* =========================
+   VOLUMES (BOOK CARDS)
+========================= */
+.book-card {
+    width: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
 .book-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px);
 }
-
 .book-cover {
     width: 140px;
     height: 210px;
-    border-radius: 4px;
-    box-shadow: 2px 4px 10px rgba(0,0,0,0.15);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-soft);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -34,60 +121,105 @@
     padding: 10px;
     box-sizing: border-box;
 }
-
-/* Subtle progress bar below the cover */
+/* reading progress */
 .progress-bar {
     width: 100%;
-    height: 4px;
-    background: rgba(0,0,0,0.1);
+    height: 3px;
+    background: rgba(0,0,0,0.08);
     border-radius: 2px;
     overflow: hidden;
 }
-
 .progress-fill {
     height: 100%;
     background: var(--accent-color);
 }
-
-/* Reading Room Layout */
-.reader-workspace { display: flex; height: 85vh; align-items: stretch; }
-#viewer { flex: 1; background: #fff; margin: 0 20px; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-[data-theme="midnight"] #viewer { background: #221a16; }
-
-.nav-btn { background: none; border: none; font-size: 2rem; color: var(--text-color); cursor: pointer; padding: 0 20px; }
-
-/* Margin Notes Sidebar */
-.margin-notes-panel { width: 300px; background: rgba(0,0,0,0.02); border-left: 1px solid rgba(0,0,0,0.1); padding: 15px; display: flex; flex-direction: column; }
-#notes-list { flex: 1; overflow-y: auto; margin-bottom: 15px; }
-.note-card { background: var(--bg-color); padding: 10px; margin-bottom: 10px; border-radius: 4px; font-size: 0.9rem; border-left: 3px solid var(--accent-color); }
-.note-input-area textarea { width: 100%; height: 80px; resize: none; margin-bottom: 8px; box-sizing: border-box; }
-/* Intake Panel Interface Styles */
-#intake-panel {
-    background: var(--shelf-bg);
-    padding: 20px;
-    margin: 20px auto;
-    max-width: 600px;
-    border-radius: 6px;
-    border: 1px dashed var(--accent-color);
-    transition: all 0.3s ease;
+/* =========================
+   READING CHAMBER
+========================= */
+.reader-workspace {
+    display: flex;
+    height: 85vh;
+    align-items: stretch;
+    gap: var(--space-md);
 }
-.hidden-panel { display: none !important; }
-
-#add-book-form {
+#viewer {
+    flex: 1;
+    background: #fff;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+}
+/* darker immersive mode */
+[data-theme="midnight"] #viewer {
+    background: #1f1714;
+}
+.nav-btn {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 0 var(--space-md);
+    opacity: 0.7;
+}
+.nav-btn:hover {
+    opacity: 1;
+}
+/* =========================
+   MARGINALIA PANEL
+========================= */
+.margin-notes-panel {
+    width: 300px;
+    background: rgba(0,0,0,0.03);
+    border-left: 1px solid rgba(0,0,0,0.08);
+    padding: var(--space-md);
     display: flex;
     flex-direction: column;
-    gap: 12px;
 }
-#add-book-form input, #add-book-form select, #add-book-form button {
+#notes-list {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: var(--space-md);
+}
+.note-card {
+    background: var(--bg-color);
     padding: 10px;
-    border-radius: 4px;
+    margin-bottom: 10px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    border-left: 3px solid var(--accent-color);
+}
+/* =========================
+   ACQUISITION CHAMBER
+========================= */
+#acquisition-chamber {
+    background: var(--shelf-bg);
+    padding: var(--space-lg);
+    margin: var(--space-lg) auto;
+    max-width: 650px;
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--accent-color);
+}
+.acquisition-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+.form-row {
+    display: flex;
+    gap: var(--space-md);
+}
+#acquisition-chamber input,
+#acquisition-chamber select,
+#acquisition-chamber button {
+    padding: 10px;
+    border-radius: var(--radius-sm);
     border: 1px solid rgba(0,0,0,0.1);
     font-family: inherit;
 }
-#add-book-form button {
+#acquisition-chamber button {
     background: var(--accent-color);
     color: white;
-    cursor: pointer;
-    font-weight: bold;
     border: none;
+    font-weight: bold;
+    cursor: pointer;
 }
