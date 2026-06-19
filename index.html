@@ -3,98 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Virtual Library</title>
-    <link rel="stylesheet" href="css/theme.css">
-    <link rel="stylesheet" href="css/layout.css">
+    <title>HazinaLibrary</title>
+    <!-- Application styling -->
+    <link rel="stylesheet" href="./css/theme.css">
+    <link rel="stylesheet" href="./css/layout.css">
+    <!-- External libraries -->
+    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- EPUB support -->
     <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
+    <!-- PDF support (reader can use later) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs"
+        type="module">
+    </script>
 </head>
 <body>
-<!-- ===================== ARCHIVE HALL ===================== -->
-<div id="archive-hall">
-    <header class="hall-header">
-        <div class="title-block">
-            <h1>The Grand Archive</h1>
-            <p class="subtitle">A living collection of knowledge, curated by wings and shelves</p>
-        </div>
-        <nav class="hall-actions">
-            <button id="open-acquisition">Acquire Volume</button>
-            <button id="toggle-theme">Switch Atmosphere</button>
-        </nav>
-    </header>
-    <!-- ===================== COLLECTION STRUCTURE ===================== -->
-    <section id="archive-structure">
-        <!-- Wings = major domains -->
-        <aside id="wings-panel">
-            <h2>Wings</h2>
-            <ul id="wing-list"></ul>
-            <button id="add-wing-btn">+ New Wing</button>
-        </aside>
-        <!-- Main shelves / books -->
-        <main id="shelf-display">
-            <div class="shelf-header">
-                <h2 id="active-wing-title">Select a Wing</h2>
-                <p id="active-wing-description"></p>
-            </div>
-            <section id="shelves-container" class="shelves-grid">
-                <!-- dynamically populated book “volumes” -->
-            </section>
-        </main>
-    </section>
-</div>
-<!-- ===================== ACQUISITION CHAMBER ===================== -->
-<section id="acquisition-chamber" class="hidden">
-    <header class="chamber-header">
-        <h2>Acquisition Chamber</h2>
-        <p>Introduce a new volume into the archive</p>
-        <button id="close-acquisition">Close</button>
-    </header>
-    <form id="add-book-form" class="acquisition-form">
-        <div class="form-row">
-            <input type="text" id="new-title" placeholder="Volume Title" required>
-            <input type="text" id="new-author" placeholder="Author / Origin" required>
-        </div>
-        <div class="form-row">
-            <label>
-                Manuscript File (EPUB / PDF)
-                <input type="file" id="new-book-file" accept=".epub, application/pdf" required>
-            </label>
-            <label>
-                Cover Seal (optional)
-                <input type="file" id="new-cover-file" accept="image/png, image/jpeg, image/webp">
-            </label>
-        </div>
-        <div class="form-row">
-            <select id="shelf-select" required>
-                <option value="">Assign to Wing...</option>
-            </select>
-        </div>
-        <button type="submit" id="catalog-submit-btn">
-            Seal and Archive Volume
-        </button>
-    </form>
-</section>
-<!-- ===================== READING CHAMBER ===================== -->
-<section id="reading-chamber" class="hidden">
-    <header class="reader-header">
-        <button id="exit-reader">Return to Archive</button>
-        <h2 id="reader-book-title"></h2>
-    </header>
-    <div class="reader-layout">
-        <button id="prev-page" class="nav-btn">◀</button>
-        <div id="viewer" class="book-viewer"></div>
-        <button id="next-page" class="nav-btn">▶</button>
-        <aside class="annotation-panel">
-            <h3>Marginalia</h3>
-            <div id="notes-list"></div>
-            <div class="note-composer">
-                <textarea id="note-text" placeholder="Write a reflection..."></textarea>
-                <button id="save-note-btn">Add Note</button>
-            </div>
-        </aside>
-    </div>
-</section>
-<script type="module" src="js/app.js"></script>
+    <!--
+        Application Mount Point
+        All UI is injected here:
+        Dashboard
+        Reader
+        Acquisition
+        Notes Panel
+    -->
+    <div id="app"></div>
+    <!--
+        Supabase configuration
+        This will later create:
+        window.supabaseClient
+    -->
+    <script type="module" src="./js/config/supabase.js"></script>
+    <!--
+        Application bootstrap
+    -->
+    <script type="module" src="./js/app.js"></script>
 </body>
 </html>
