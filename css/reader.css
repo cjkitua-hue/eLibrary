@@ -1,0 +1,235 @@
+/* =========================
+   READING CHAMBER CORE
+========================= */
+#reading-chamber {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-color);
+    color: var(--text-color);
+    z-index: 1000;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 0;
+}
+/* =========================
+   READER HEADER (MINIMAL CONTROL BAR)
+========================= */
+.reader-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 12px 20px;
+
+    background: var(--surface-soft);
+    backdrop-filter: blur(10px);
+
+    border-bottom: 1px solid var(--surface-soft);
+}
+.reader-header h2 {
+    font-size: 1rem;
+    margin: 0;
+    font-weight: normal;
+    opacity: 0.9;
+}
+#exit-reader {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+
+    font-size: 0.95rem;
+    opacity: 0.7;
+}
+#exit-reader:hover {
+    opacity: 1;
+}
+/* =========================
+   READER LAYOUT (CENTERED FOCUS FLOW)
+========================= */
+.reader-layout {
+    flex: 1;
+    display: grid;
+
+    grid-template-columns: 60px 1fr 60px 320px;
+    align-items: stretch;
+
+    height: 100%;
+}
+/* =========================
+   PAGE NAVIGATION BUTTONS
+========================= */
+.nav-btn {
+    background: none;
+    border: none;
+
+    font-size: 2rem;
+    color: var(--text-color);
+
+    cursor: pointer;
+    opacity: 0.4;
+
+    transition: opacity 0.2s ease, transform 0.2s ease;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.nav-btn:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+/* =========================
+   BOOK VIEWER (MAIN READING SURFACE)
+========================= */
+.book-viewer,
+#viewer {
+    background: var(--card-bg);
+    margin: 20px 0;
+
+    border-radius: 8px;
+    box-shadow: var(--shadow-soft);
+
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    font-family: var(--font-main);
+    line-height: 1.7;
+
+    color: var(--text-color);
+}
+/* EPUB content normalization */
+#viewer iframe {
+    width: 100% !important;
+    height: 100% !important;
+}
+/* =========================
+   MARGINALIA PANEL (RIGHT SIDEBAR)
+========================= */
+.annotation-panel {
+    background: var(--shelf-bg);
+
+    border-left: 1px solid var(--surface-soft);
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 16px;
+    gap: 12px;
+}
+.annotation-panel h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: normal;
+    opacity: 0.85;
+}
+/* =========================
+   NOTES LIST
+========================= */
+#notes-list {
+    flex: 1;
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    padding-right: 6px;
+}
+/* individual note card */
+.note-card {
+    background: var(--card-bg);
+
+    padding: 10px;
+    border-radius: 6px;
+
+    font-size: 0.9rem;
+    line-height: 1.4;
+
+    border-left: 3px solid var(--accent-color);
+
+    box-shadow: var(--shadow-soft);
+}
+/* =========================
+   NOTE INPUT AREA
+========================= */
+.note-composer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    margin-top: auto;
+}
+.note-composer textarea {
+    width: 100%;
+    height: 80px;
+
+    resize: none;
+
+    padding: 10px;
+    border-radius: 6px;
+
+    border: 1px solid var(--surface-soft);
+
+    background: var(--card-bg);
+    color: var(--text-color);
+
+    font-family: var(--font-main);
+}
+.note-composer button {
+    background: var(--accent-color);
+    color: #fff;
+
+    border: none;
+    padding: 10px;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+    font-weight: bold;
+
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.note-composer button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+/* =========================
+   READING FOCUS ENHANCEMENTS
+========================= */
+/* subtle vignette effect for immersion */
+#reading-chamber::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background: radial-gradient(
+        ellipse at center,
+        transparent 40%,
+        rgba(0,0,0,0.08) 100%
+    );
+
+    opacity: 0.6;
+}
+/* reduce distraction in dark themes */
+[data-theme="midnight"] .note-card,
+[data-theme="velvet"] .note-card {
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+}
+/* softer text rendering in dark modes */
+[data-theme="midnight"],
+[data-theme="velvet"] {
+    #viewer {
+        background: var(--card-bg);
+    }
+}
