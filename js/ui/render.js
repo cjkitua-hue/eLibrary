@@ -31,24 +31,34 @@ export function renderWings(wings, container) {
                 if (shelf.books && shelf.books.length > 0) {
                     shelf.books.forEach(book => {
                         const bookElement = document.createElement('div');
-// Inside render.js where you map through shelf.books
-                        bookElement.className = 'book-card'; // Changed from book-spine
+                        bookElement.className = 'book-card';
                         bookElement.dataset.id = book.id;
 
-// Check if we have a cover, otherwise use a fallback gradient
-                    const coverStyle = book.cover_image_url 
-                        ? `background-image: url('${book.cover_image_url}'); background-size: cover;`
-                        : `background: linear-gradient(45deg, var(--accent-color), var(--shelf-bg));`;
-            
-                    bookElement.innerHTML = `
-    <div class="book-cover" style="${coverStyle}">
-        ${!book.cover_image_url ? `<span class="fallback-title">${book.title}</span>` : ''}
-    </div>
-    <div class="book-meta">
-        <h4 class="book-title-text">${book.title}</h4>
-        <span class="book-author">${book.author}</span>
-        <div class="progress-bar">
-            <div class="progress-fill" style="width: ${book.progress_percentage || 0}%"></div>
-        </div>
-    </div>
-`;
+                        const coverStyle = book.cover_image_url 
+                            ? `background-image: url('${book.cover_image_url}'); background-size: cover;`
+                            : `background: linear-gradient(45deg, var(--accent-color), var(--shelf-bg));`;
+                        
+                        bookElement.innerHTML = `
+                            <div class="book-cover" style="${coverStyle}">
+                                ${!book.cover_image_url ? `<span class="fallback-title">${book.title}</span>` : ''}
+                            </div>
+                            <div class="book-meta">
+                                <h4 class="book-title-text">${book.title}</h4>
+                                <span class="book-author">${book.author}</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${book.progress_percentage || 0}%"></div>
+                                </div>
+                            </div>
+                        `;
+
+                        booksLine.appendChild(bookElement);
+                    });
+                }
+
+                shelvesContainer.appendChild(shelfElement);
+            });
+        }
+
+        container.appendChild(wingElement);
+    });
+}
