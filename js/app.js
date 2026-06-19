@@ -2,11 +2,11 @@
 // Composition root for Virtual Library
 // Initializes services, event system, router, and core UI modules
 
-import Router from "./router.js";
-import Dashboard from "./dashboard.js";
-import NotesPanel from "./notespanel.js";
-import Bookshelf from "./bookshelf.js";
-import Reader from "./reader.js";
+import Router from "./core/router.js";
+import Dashboard from "./ui/dashboard.js";
+import Reader from "./ui/reader.js";
+import Bookshelf from "./ui/bookshelf.js";
+import NotesPanel from "./ui/notespanel.js";
 // -------------------- Event Bus --------------------
 class EventBus {
   constructor() {
