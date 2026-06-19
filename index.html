@@ -11,58 +11,90 @@
     <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
 </head>
 <body>
-    
-    <div id="library-view">
-        <header class="library-header">
-            <h1>The Grand Hall</h1>
-            <div class="controls">
-                <button id="toggle-intake-btn">+ Add New Book</button>
-                <button id="theme-toggle">Toggle Midnight Archive</button>
-            </div>
-        </header>
-
-        <section id="intake-panel" class="hidden-panel">
-            <h3>Acquire New Volume</h3>
-                <form id="add-book-form">
-                <input type="text" id="new-title" placeholder="Book Title" required>
-                <input type="text" id="new-author" placeholder="Author Name" required>
-    
-                <label for="new-book-file">Upload Book File (EPUB or PDF)</label>
-                <input type="file" id="new-book-file" accept=".epub, application/pdf" required>
-    
-                <label for="new-cover-file">Upload Cover Image (Optional)</label>
-            <input type="file" id="new-cover-file" accept="image/png, image/jpeg, image/webp">
-    
-    <select id="shelf-select" required>
-        <option value="">Select a Shelf...</option>
-    </select>
-    
-    <button type="submit" id="catalog-submit-btn">Catalog Book</button>
-</form>
-        </section>
-
-        <main id="wings-container" class="wings-grid"></main>
-    </div>
-
-    <div id="reading-room" class="hidden">
-        <header class="reader-header">
-            <button id="close-reader">◀ Back to Grand Hall</button>
-            <h2 id="reader-book-title">Book Title</h2>
-        </header>
-        <div class="reader-workspace">
-            <button id="prev-page" class="nav-btn">◀</button>
-            <div id="viewer"></div>
-            <button id="next-page" class="nav-btn">▶</button>
-            <aside class="margin-notes-panel">
-                <h3>Margin Notes</h3>
-                <div id="notes-list"></div>
-                <div class="note-input-area">
-                    <textarea id="note-text" placeholder="Jot down a thought..."></textarea>
-                    <button id="save-note-btn">Attach Note</button>
-                </div>
-            </aside>
+<!-- ===================== ARCHIVE HALL ===================== -->
+<div id="archive-hall">
+    <header class="hall-header">
+        <div class="title-block">
+            <h1>The Grand Archive</h1>
+            <p class="subtitle">A living collection of knowledge, curated by wings and shelves</p>
         </div>
+        <nav class="hall-actions">
+            <button id="open-acquisition">Acquire Volume</button>
+            <button id="toggle-theme">Switch Atmosphere</button>
+        </nav>
+    </header>
+    <!-- ===================== COLLECTION STRUCTURE ===================== -->
+    <section id="archive-structure">
+        <!-- Wings = major domains -->
+        <aside id="wings-panel">
+            <h2>Wings</h2>
+            <ul id="wing-list"></ul>
+            <button id="add-wing-btn">+ New Wing</button>
+        </aside>
+        <!-- Main shelves / books -->
+        <main id="shelf-display">
+            <div class="shelf-header">
+                <h2 id="active-wing-title">Select a Wing</h2>
+                <p id="active-wing-description"></p>
+            </div>
+            <section id="shelves-container" class="shelves-grid">
+                <!-- dynamically populated book “volumes” -->
+            </section>
+        </main>
+    </section>
+</div>
+<!-- ===================== ACQUISITION CHAMBER ===================== -->
+<section id="acquisition-chamber" class="hidden">
+    <header class="chamber-header">
+        <h2>Acquisition Chamber</h2>
+        <p>Introduce a new volume into the archive</p>
+        <button id="close-acquisition">Close</button>
+    </header>
+    <form id="add-book-form" class="acquisition-form">
+        <div class="form-row">
+            <input type="text" id="new-title" placeholder="Volume Title" required>
+            <input type="text" id="new-author" placeholder="Author / Origin" required>
+        </div>
+        <div class="form-row">
+            <label>
+                Manuscript File (EPUB / PDF)
+                <input type="file" id="new-book-file" accept=".epub, application/pdf" required>
+            </label>
+            <label>
+                Cover Seal (optional)
+                <input type="file" id="new-cover-file" accept="image/png, image/jpeg, image/webp">
+            </label>
+        </div>
+        <div class="form-row">
+            <select id="shelf-select" required>
+                <option value="">Assign to Wing...</option>
+            </select>
+        </div>
+        <button type="submit" id="catalog-submit-btn">
+            Seal and Archive Volume
+        </button>
+    </form>
+</section>
+<!-- ===================== READING CHAMBER ===================== -->
+<section id="reading-chamber" class="hidden">
+    <header class="reader-header">
+        <button id="exit-reader">Return to Archive</button>
+        <h2 id="reader-book-title"></h2>
+    </header>
+    <div class="reader-layout">
+        <button id="prev-page" class="nav-btn">◀</button>
+        <div id="viewer" class="book-viewer"></div>
+        <button id="next-page" class="nav-btn">▶</button>
+        <aside class="annotation-panel">
+            <h3>Marginalia</h3>
+            <div id="notes-list"></div>
+            <div class="note-composer">
+                <textarea id="note-text" placeholder="Write a reflection..."></textarea>
+                <button id="save-note-btn">Add Note</button>
+            </div>
+        </aside>
     </div>
-    <script type="module" src="js/app.js"></script>
+</section>
+<script type="module" src="js/app.js"></script>
 </body>
 </html>
