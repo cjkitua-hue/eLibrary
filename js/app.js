@@ -1,111 +1,164 @@
-import { fetchLibraryHierarchy, fetchBookDetails, fetchAllShelves, insertNewBook, uploadLibraryFile } from './api/supabase.js';
-import { renderWings } from './ui/render.js';
-import { openReadingRoom, setupReaderControls } from './ui/reader.js';
+// app.js
+// Composition root for Virtual Library
+// Initializes services, event system, router, and core UI modules
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const wingsContainer = document.getElementById('wings-container');
-    const themeToggle = document.getElementById('theme-toggle');
-    const toggleIntakeBtn = document.getElementById('toggle-intake-btn');
-    const intakePanel = document.getElementById('intake-panel');
-    const addBookForm = document.getElementById('add-book-form');
-    const shelfSelect = document.getElementById('shelf-select');
+import Router from "./router.js";
+import Dashboard from "./dashboard.js";
+import NotesPanel from "./notespanel.js";
+import Bookshelf from "./bookshelf.js";
+import Reader from "./reader.js";
+// -------------------- Event Bus --------------------
+class EventBus {
+  constructor() {
+    this.events = new Map();
+  }
 
-    // ==========================================
-    // STEP 1: WIRE UP UI CONTROLS IMMEDIATELY
-    // ==========================================
-    setupReaderControls();
+  on(event, handler) {
+    if (!this.events.has(event)) this.events.set(event, []);
+    this.events.get(event).push(handler);
+  }
 
-    // Toggle the Intake panel view drawer
-    toggleIntakeBtn.addEventListener('click', () => {
-        intakePanel.classList.toggle('hidden-panel');
-    });
+  emit(event, payload) {
+    const handlers = this.events.get(event);
+    if (!handlers) return;
+    handlers.forEach(h => h(payload));
+  }
 
-    // Handle theme switcher toggling
-    themeToggle.addEventListener('click', () => {
-        const active = document.body.getAttribute('data-theme') === 'midnight';
-        active ? document.body.removeAttribute('data-theme') : document.body.setAttribute('data-theme', 'midnight');
-    });
+  off(event, handler) {
+    const handlers = this.events.get(event);
+    if (!handlers) return;
+    this.events.set(
+      event,
+      handlers.filter(h => h !== handler)
+    );
+  }
+}
+// -------------------- Services (abstractions) --------------------
+// These assume you already have Supabase or another backend layer.
+// Keep them thin and replace internals later as needed.
+class LibraryService {
+  constructor(supabaseClient) {
+    this.db = supabaseClient;
+  }
 
-    // Handle book cataloging form submission
-    addBookForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const submitBtn = document.getElementById('catalog-submit-btn');
-        submitBtn.textContent = 'Uploading to Archives...';
-        submitBtn.disabled = true;
+  async getWings() {
+    const { data } = await this.db.from("wings").select("*");
+    return data;
+  }
 
-        try {
-            const bookFile = document.getElementById('new-book-file').files[0];
-            const coverFile = document.getElementById('new-cover-file').files[0];
-            
-            const fileExtension = bookFile.name.split('.').pop().toLowerCase();
-            const fileType = fileExtension === 'pdf' ? 'pdf' : 'epub';
+  async getShelvesByWing(wingId) {
+    const { data } = await this.db
+      .from("shelves")
+      .select("*")
+      .eq("wing_id", wingId);
 
-            let finalBookUrl = '';
-            let finalCoverUrl = null;
+    return data;
+  }
 
-            if (bookFile) {
-                finalBookUrl = await uploadLibraryFile('books', bookFile);
-            }
+  async getBooksByShelf(shelfId) {
+    const { data } = await this.db
+      .from("books")
+      .select("*")
+      .eq("shelf_id", shelfId);
 
-            if (coverFile) {
-                finalCoverUrl = await uploadLibraryFile('covers', coverFile);
-            }
+    return data;
+  }
+}
 
-            const newBook = {
-                title: document.getElementById('new-title').value.trim(),
-                author: document.getElementById('new-author').value.trim(),
-                file_url: finalBookUrl,
-                cover_image_url: finalCoverUrl,
-                shelf_id: shelfSelect.value,
-                file_type: fileType,
-                progress_percentage: 0
-            };
+class NotesService {
+  constructor(supabaseClient) {
+    this.db = supabaseClient;
+  }
 
-            const result = await insertNewBook(newBook);
-            if (result) {
-                alert('Volume permanently archived in library vaults!');
-                window.location.reload();
-            }
-        } catch (error) {
-            alert('Failed to catalog the book. Check the console for details.');
-            console.error(error);
-            submitBtn.textContent = 'Catalog Book';
-            submitBtn.disabled = false;
-        }
-    });
+  async getNotesByBook(bookId) {
+    const { data } = await this.db
+      .from("notes")
+      .select("*")
+      .eq("book_id", bookId);
 
-    // Global click listener for book clicks
-    wingsContainer.addEventListener('click', async (e) => {
-        const card = e.target.closest('.book-spine');
-        if (card) {
-            const bookId = card.dataset.id;
-            card.style.opacity = '0.5';
-            const dataPackage = await fetchBookDetails(bookId);
-            openReadingRoom(dataPackage.book, dataPackage.notes);
-        }
-    });
+    return data;
+  }
 
-    // ==========================================
-    // STEP 2: LOAD ASYNCHRONOUS DATABASE DATA
-    // ==========================================
-    try {
-        wingsContainer.innerHTML = '<p>Opening the vault...</p>';
-        
-        // Fetch library layout layout structure
-        const libraryData = await fetchLibraryHierarchy();
-        renderWings(libraryData, wingsContainer);
+  async createNote(note) {
+    const { data } = await this.db
+      .from("notes")
+      .insert(note)
+      .select()
+      .single();
 
-        // Populate form dropdown select selection menu
-        const shelves = await fetchAllShelves();
-        shelves.forEach(shelf => {
-            const option = document.createElement('option');
-            option.value = shelf.id;
-            option.textContent = shelf.name;
-            shelfSelect.appendChild(option);
-        });
-    } catch (error) {
-        console.error("Vault access initialization failed:", error);
-        wingsContainer.innerHTML = '<p style="color: red; padding: 20px;">Could not connect to the vault. Please configure your keys in js/api/supabase.js.</p>';
+    return data;
+  }
+
+  async updateNote(note) {
+    const { data } = await this.db
+      .from("notes")
+      .update(note)
+      .eq("id", note.id)
+      .select()
+      .single();
+
+    return data;
+  }
+
+  async deleteNote(noteId) {
+    await this.db.from("notes").delete().eq("id", noteId);
+  }
+}
+// -------------------- App Bootstrap --------------------
+async function bootstrap() {
+  const root = document.getElementById("app");
+
+  // Supabase client assumed to be initialized globally or imported separately
+  const supabase = window.supabaseClient;
+
+  const eventBus = new EventBus();
+
+  const libraryService = new LibraryService(supabase);
+  const notesService = new NotesService(supabase);
+
+  // Global Notes Panel (persistent side panel)
+  const notesContainer = document.createElement("div");
+  notesContainer.id = "notes-panel-root";
+  document.body.appendChild(notesContainer);
+
+  const notesPanel = new NotesPanel({
+    container: notesContainer,
+    notesService,
+    eventBus
+  });
+
+  // Router manages main view
+  const router = new Router({
+    container: root,
+    eventBus,
+    views: {
+      dashboard: Dashboard,
+      reader: Reader,
+      bookshelf: Bookshelf
     }
-});
+  });
+  // -------------------- Global App Events --------------------
+  eventBus.on("dashboard:open-book", (book) => {
+    // Optional side effect: preload notes when opening book
+    notesPanel.loadNotes(book.id);
+  });
+
+  eventBus.on("router:navigated", ({ view }) => {
+    // Close notes panel when leaving reader if needed (optional policy)
+    if (view !== "reader") {
+      notesContainer.classList.add("hidden");
+    } else {
+      notesContainer.classList.remove("hidden");
+    }
+  });
+
+  // Expose debug access (optional during development)
+  window.app = {
+    router,
+    eventBus,
+    libraryService,
+    notesService
+  };
+}
+
+bootstrap();
