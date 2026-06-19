@@ -1,33 +1,108 @@
+/* =========================
+   CORE THEME TOKENS (LIGHT DEFAULT)
+========================= */
 :root {
-    /* Warm Light Mode */
-    --bg-color: #F9F7F1;         /* Soft parchment */
-    --text-color: #2D3748;       /* Deep slate for readability */
-    --accent-color: #D97757;     /* Warm terracotta */
-    --shelf-bg: #EADDCB;         /* Warm oak wood tone */
+    /* Typography */
+    --font-main: "Georgia", serif;
+
+    /* Light Archive Theme (Parchment Hall) */
+    --bg-color: #F9F7F1;         /* parchment paper */
+    --text-color: #2D3748;       /* ink slate */
+    --accent-color: #D97757;     /* terracotta seal */
+    --shelf-bg: #EADDCB;         /* oak / wood shelf tone */
     --card-bg: #FFFFFF;
-    --success-color: #4CAF50;    /* For reading progress */
-}
+    --surface-soft: rgba(0,0,0,0.04);
 
-/* Let's rename the data-theme conceptually to 'abyss' or keep 'midnight' */
+    /* semantic colors */
+    --success-color: #4CAF50;
+
+    /* UI depth */
+    --shadow-soft: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-elevated: 0 10px 25px rgba(0,0,0,0.12);
+}
+/* =========================
+   MIDNIGHT MODE (DEEP NAVY ARCHIVE)
+========================= */
 [data-theme="midnight"] {
-    /* Deep Blue Dark Mode */
-    --bg-color: #0B1120;         /* Very dark navy/abyss */
-    --text-color: #E2E8F0;       /* Soft icy white */
-    --accent-color: #38BDF8;     /* Bright neon-ish blue for pop */
-    --shelf-bg: #1E293B;         /* Dark slate blue for shelves */
+    --bg-color: #0B1120;
+    --text-color: #E2E8F0;
+    --accent-color: #38BDF8;
+    --shelf-bg: #1E293B;
     --card-bg: #151F32;
-    --success-color: #10B981; 
-}
+    --surface-soft: rgba(255,255,255,0.05);
 
+    --success-color: #10B981;
+
+    --shadow-soft: 0 4px 14px rgba(0,0,0,0.6);
+    --shadow-elevated: 0 12px 28px rgba(0,0,0,0.7);
+}
+/* =========================
+   VELVET GREEN MODE (ELEGANT STUDY CHAMBER)
+========================= */
+[data-theme="velvet"] {
+    /* base atmosphere: deep library green with warmth */
+    --bg-color: #0F1E17;        /* deep forest night */
+    --text-color: #E6F0EA;      /* soft parchment green-white */
+    --accent-color: #B7D3C2;    /* muted antique mint */
+    --shelf-bg: #15261F;        /* darker wood-green shelves */
+    --card-bg: #1A2F26;         /* card surfaces */
+    --surface-soft: rgba(255,255,255,0.06);
+
+    --success-color: #7FD1AE;
+
+    --shadow-soft: 0 6px 18px rgba(0,0,0,0.55);
+    --shadow-elevated: 0 14px 32px rgba(0,0,0,0.7);
+}
+/* =========================
+   GLOBAL BASE STYLES
+========================= */
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
-    font-family: 'Georgia', serif; /* Classic book typography */
-    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: var(--font-main);
     margin: 0;
     padding: 20px;
-}
 
+    transition: background-color 0.35s ease, color 0.35s ease;
+}
+/* =========================
+   UI PRIMITIVES
+========================= */
 .hidden {
     display: none !important;
+}
+/* subtle surfaces for panels/cards */
+.surface {
+    background: var(--card-bg);
+    box-shadow: var(--shadow-soft);
+    border-radius: 6px;
+}
+/* accent highlight utility */
+.accent {
+    color: var(--accent-color);
+}
+/* soft divider tone */
+.divider {
+    border-color: var(--surface-soft);
+}
+/* =========================
+   THEME-SPECIFIC POLISH
+========================= */
+/* smoother contrast in dark modes */
+[data-theme="midnight"] body,
+[data-theme="velvet"] body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+/* improve readability in reading chamber */
+#viewer {
+    background: var(--card-bg);
+}
+/* make shelves feel embedded in environment */
+.shelf {
+    background: var(--shelf-bg);
+}
+/* book cards inherit surface tone instead of hard white */
+.book-cover {
+    background: var(--card-bg);
 }
